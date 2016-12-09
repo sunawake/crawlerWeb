@@ -123,6 +123,10 @@ def getShopInfo(shopID):
     
     # get information from other pages
     pageNumList = html.xpath("//a[@class='PageLink']/@data-pg");
+    
+    if len(pageNumList) < 2:
+        return [shopInfo,shopInfoLite];
+    
     pageNumMax = int(pageNumList[-1]);
     for page in range(2,(pageNumMax+1)):
         params["pageno"] = page;
@@ -156,8 +160,4 @@ def getShopInfo(shopID):
     
     # return result
     return [shopInfo,shopInfoLite];
-    
-
-
-
 
