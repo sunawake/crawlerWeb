@@ -2,7 +2,7 @@
 # -*- coding:utf-8 -*-
 
 import csv
-import random
+import os
 import sys
 import time
 import dianping
@@ -12,29 +12,37 @@ import dianping
 reload(sys);
 sys.setdefaultencoding('utf-8');
 
-## just for tourism in Beijing
-baseUrl = "http://www.dianping.com/search/category/2/35/";
-typeList = ['g33831','g2916','g2926','g2834','g5672','g27852','g20038'];
 
-
-## get information of shops in type 2.
-
-typeId = typeList[2];
-url = baseUrl + typeId;
-shopIDs = dianping.getShopIDs(url);
-# store it
+## get shop ids
+typeId = 'g2926';
+shopIDs = [];
+# read shopIDs in
 filename0 = "t_" + typeId + ".shoplist.csv";
-csvfile0 = file(filename0,"wb");
-writer0 = csv.writer(csvfile0);
-writer0.writerows([[typeId] + shopIDs]);
+csvfile0 = file(filename0,"r");
+reader0 = csv.reader(csvfile0);
+for row in reader0:
+    shopIDs = shopIDs + row;
 csvfile0.close();
+# remove shops which have been searched.
+filelist = os.listdir(".");
+for filen in filelist:
+    if (filen.startswith("t_" + typeId + "_s_") and filen.endswith(".lite.csv")):
+        filen.replace("t_" + typeId + "_s_","");
+        filen.replace(".lite.csv","");
+        while filen in shopIDs:
+            shopIDs.remove(filen);
 
-# get every thing.
+
+## get every thing.
+timecount = 1;
 shopInfoTotal = [];
 shopInfoTotalLite = [];
 for shopId in shopIDs:
+    # just take a rest ^_^
+    if timecount > 10:
+        timecount = 1;
+        time.sleep(300);
     # get the information of this shop
-    # time.sleep(random.randint(8,12));
     [shopInfo,shopInfoLite] = dianping.getShopInfo(shopId);
     if len(shopInfo) < 1:
         message = "shop " + shopId + " has no comments yet.";
@@ -54,15 +62,5 @@ for shopId in shopIDs:
         print(message);
         shopInfoTotal = shopInfoTotal + shopInfo;
         shopInfoTotalLite = shopInfoTotalLite + shopInfoLite;
-filename3 = "t_" + typeId + ".shopinfo.csv";
-csvfile3 = file(filename3,"wb");
-writer3 = csv.writer(csvfile3);
-writer3.writerows(shopInfoTotal);
-csvfile3.close();
-filename4 = "t_" + typeId + ".shopinfo.lite.csv";
-csvfile4 = file(filename4,"wb");
-writer4 = csv.writer(csvfile4);
-writer4.writerows(shopInfoTotalLite);
-csvfile4.close();
-
+    timecount = timecount + 1;
 
