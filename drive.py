@@ -20,17 +20,19 @@ shopIDs = [];
 filename0 = "t_" + typeId + ".shoplist.csv";
 csvfile0 = file(filename0,"r");
 reader0 = csv.reader(csvfile0);
+
 for row in reader0:
     shopIDs = shopIDs + row;
+
 csvfile0.close();
 # remove shops which have been searched.
 filelist = os.listdir(".");
+
 for filen in filelist:
     if (filen.startswith("t_" + typeId + "_s_") and filen.endswith(".lite.csv")):
-        filen.replace("t_" + typeId + "_s_","");
-        filen.replace(".lite.csv","");
-        while filen in shopIDs:
-            shopIDs.remove(filen);
+        shopid = filen.replace("t_" + typeId + "_s_","").replace(".lite.csv","");
+        while shopid in shopIDs:
+            shopIDs.remove(shopid);
 
 
 ## get every thing.
@@ -40,8 +42,10 @@ shopInfoTotalLite = [];
 for shopId in shopIDs:
     # just take a rest ^_^
     if timecount > 10:
+        print("Let's take a rest for 5 minutes.");
         timecount = 1;
         time.sleep(300);
+    
     # get the information of this shop
     [shopInfo,shopInfoLite] = dianping.getShopInfo(shopId);
     if len(shopInfo) < 1:
@@ -62,5 +66,7 @@ for shopId in shopIDs:
         print(message);
         shopInfoTotal = shopInfoTotal + shopInfo;
         shopInfoTotalLite = shopInfoTotalLite + shopInfoLite;
+    
+    # timecount + 1
     timecount = timecount + 1;
 
