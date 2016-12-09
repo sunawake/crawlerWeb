@@ -103,7 +103,11 @@ def getShopInfo(shopID):
         commentXpath = "//div[@class='comment-list']/ul/li[@data-id=" + dataId + "]/div[@class='content']/div[@class='comment-txt']/div/text()";
         timestampXpath = "//div[@class='comment-list']/ul/li[@data-id=" + dataId + "]/div[@class='content']/div[@class='misc-info']/span[@class='time']/text()";
         userId = html.xpath(userXpath)[0];
-        star = html.xpath(starXpath)[0][-2];
+        starWd = html.xpath(starXpath);
+        if len(starWd) > 0:
+            star = starWd[0][-2];
+        else:
+            star = '0';
         scoreWordList = html.xpath(scoreXpath);
         score = [];
         if len(scoreWordList) < 3:
@@ -132,7 +136,11 @@ def getShopInfo(shopID):
             commentXpath = "//div[@class='comment-list']/ul/li[@data-id=" + dataId + "]/div[@class='content']/div[@class='comment-txt']/div/text()";
             timestampXpath = "//div[@class='comment-list']/ul/li[@data-id=" + dataId + "]/div[@class='content']/div[@class='misc-info']/span[@class='time']/text()"
             userId = html.xpath(userXpath)[0];
-            star = html.xpath(starXpath)[0][-2];
+            starWd = html.xpath(starXpath);
+            if len(starWd) > 0:
+                star = starWd[0][-2];
+            else:
+                star = '0';
             scoreWordList = html.xpath(scoreXpath);
             score = [];
             if len(scoreWordList) < 3:

@@ -21,12 +21,12 @@ typeList = ['g33831','g2916','g2926','g2834','g5672','g27852','g20038'];
 
 typeId = typeList[2];
 url = baseUrl + typeId;
-shopIDs = getShopIDs(url);
+shopIDs = dianping.getShopIDs(url);
 # store it
 filename0 = "t_" + typeId + ".shoplist.csv";
 csvfile0 = file(filename0,"wb");
 writer0 = csv.writer(csvfile0);
-writer0.writerows([typeId] + shopIDs);
+writer0.writerows([[typeId] + shopIDs]);
 csvfile0.close();
 
 # get every thing.
@@ -34,8 +34,8 @@ shopInfoTotal = [];
 shopInfoTotalLite = [];
 for shopId in shopIDs:
     # get the information of this shop
-    time.sleep(random.randint(8,12));
-    [shopInfo,shopInfoLite] = getShopInfo(shopId);
+    # time.sleep(random.randint(8,12));
+    [shopInfo,shopInfoLite] = dianping.getShopInfo(shopId);
     if len(shopInfo) < 1:
         message = "shop " + shopId + " has no comments yet.";
         print(message);
