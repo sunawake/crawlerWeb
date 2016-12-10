@@ -11,6 +11,8 @@ import time
 reload(sys);
 sys.setdefaultencoding('utf-8');
 
+# baseUrl = "http://www.dianping.com/search/category/2/35/";
+# typeList = ['g33831','g2916','g2926','g2834','g5672','g27852','g20038'];
 
 ## generate request headers from Mozilla Firefox 50.0
 def headerGen(baseUrl):
@@ -57,6 +59,8 @@ def getShopIDs(baseUrl):
     # how many pages of this type
     pageXpath = "//div[@class='shop-wrap']/div[@class='page']/a[@class='PageLink']/@title";
     pageNumList = html.xpath(pageXpath);
+    if len(pageNumMax) < 2:
+        return shopIDs;
     pageNumMax = int(pageNumList[-1]);
     
     # get shop ids on other pages
@@ -82,6 +86,34 @@ def getShopInfo(shopID):
     #shopID = "4668013";
     shopInfo = [];
     shopInfoLite = [];
+    
+    # get shop position
+    baseUrl = "http://www.dianping.com/shop/" + shopID;
+    headers = headerGen(baseUrl);
+    params = {};
+    html = getHtml(baseUrl,params,headers);
+    tmp = html.xpath("//div[@class='aside']/script/text()");
+    postr = "";
+    for tmp1 in tmp:
+        if "http://apis.map.qq.com" in tmp1:
+            postr = tmp1;
+    poslst = postr.split("(");
+    posword = "";
+    for tmp1 in poslst:
+        if "lng:" in tmp1 and "lat:" in tmp1:
+            posword = tmp1.replace("{","").replace("}","").replace("(","").replace(")","").replace(";","").replace("\n","").replace(" ","");
+    if len(posword) < 1:
+        posword = 'lng:116.397566,lat:39.906930'; # <lng:116.356400,lat:39.964680>
+    posLng = '';
+    posLat = '';
+    posLsp = posword.split(",");
+    for tmp1 in posLsp:
+        if "lng:" in tmp1:
+            posLng = tmp1.replace("lng:","");
+        if "lat:" in tmp1:
+            posLat = tmp1.replace("lat:","");
+    del baseUrl,headers,params,html,tmp,postr,poslst,posLsp;
+    
     
     # get information from the first page
     baseUrl = "http://www.dianping.com/shop/" + shopID + "/review_all";
@@ -118,8 +150,8 @@ def getShopInfo(shopID):
         comment = html.xpath(commentXpath)[0].replace("\n","").replace(" ","");
         timestamp = html.xpath(timestampXpath)[0];
         # store them
-        shopInfo.append([shopID,userId,star,score[0],score[1],score[2],timestamp,comment]);
-        shopInfoLite.append([shopID,userId,star,score[0],score[1],score[2]]);
+        shopInfo.append([shopID,userId,star,score[0],score[1],score[2],posLng,posLat,timestamp,comment]);
+        shopInfoLite.append([shopID,userId,star,score[0],score[1],score[2],posLng,posLat]);
     
     # get information from other pages
     pageNumList = html.xpath("//a[@class='PageLink']/@data-pg");
@@ -155,8 +187,8 @@ def getShopInfo(shopID):
             comment = html.xpath(commentXpath)[0].replace("\n","").replace(" ","");
             timestamp = html.xpath(timestampXpath)[0];
             # store them
-            shopInfo.append([shopID,userId,star,score[0],score[1],score[2],timestamp,comment]);
-            shopInfoLite.append([shopID,userId,star,score[0],score[1],score[2]]);
+            shopInfo.append([shopID,userId,star,score[0],score[1],score[2],posLng,posLat,timestamp,comment]);
+            shopInfoLite.append([shopID,userId,star,score[0],score[1],score[2],posLng,posLat]);
     
     # return result
     return [shopInfo,shopInfoLite];

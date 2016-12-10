@@ -34,11 +34,9 @@ for filen in filelist:
         while shopid in shopIDs:
             shopIDs.remove(shopid);
 
-
 ## get every thing.
 timecount = 1;
-shopInfoTotal = [];
-shopInfoTotalLite = [];
+
 for shopId in shopIDs:
     # just take a rest ^_^
     if timecount > 10:
@@ -64,9 +62,6 @@ for shopId in shopIDs:
         csvfile2.close();
         message = "shop " + shopId + " has been saved.";
         print(message);
-        shopInfoTotal = shopInfoTotal + shopInfo;
-        shopInfoTotalLite = shopInfoTotalLite + shopInfoLite;
     
     # timecount + 1
     timecount = timecount + 1;
-
