@@ -17,7 +17,7 @@ sys.setdefaultencoding('utf-8');
 typeId = 'g2926';
 shopIDs = [];
 # read shopIDs in
-filename0 = "t_" + typeId + ".shoplist.csv";
+filename0 = os.getcwd() + os.sep + "shoplist" + os.sep + "t_" + typeId + ".shoplist.csv";
 csvfile0 = file(filename0,"r");
 reader0 = csv.reader(csvfile0);
 

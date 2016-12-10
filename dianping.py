@@ -29,8 +29,8 @@ def headerGen(baseUrl):
 
 ## get html from webpage
 def getHtml(url,param,header):
-    page = "";
     time.sleep(random.randint(4,8));
+    page = "";
     try:
         page = requests.get(url,params=param,headers=header);
     except requests.exceptions.Timeout:
