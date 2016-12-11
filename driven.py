@@ -47,9 +47,10 @@ def getTypeInfo(typeId):
             time.sleep(300);
         
         # get the information of this shop
+        print("processing shop " + shopId + ": start.");
         [shopInfo,shopInfoLite] = dianping.getShopInfo(shopId);
         if len(shopInfo) < 1:
-            message = "shop " + shopId + " has no comments yet.";
+            message = "processing shop " + shopId + ": get no comment.";
             print(message);
         else:
             filename1 = "t_" + typeId + "_s_" + shopId + ".csv";
@@ -62,7 +63,7 @@ def getTypeInfo(typeId):
             writer2.writerows(shopInfoLite);
             csvfile1.close();
             csvfile2.close();
-            message = "shop " + shopId + " has been saved.";
+            message = "processing shop " + shopId + ": has been saved.";
             print(message);
         
         # timecount + 1
