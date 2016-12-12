@@ -45,21 +45,23 @@ def getHtml(url,param,header):
         print(e);
     html = etree.HTML(page.text);
     # see if we have no access to the site. thanks to github.com/qiyeboy/IPProxyPool
-    ipcount = 20;
+    ipcount = 25;
     ipoint = ipcount;
-    proxyRsp = requests.get('http://127.0.0.1:8000/?types=0&count=' + str(ipcount));
-    proxyIp = json.loads(proxyRsp.text);
+    proxyIp = [];
+    if len(html.xpath("//a[@href='http://www.dianping.com/aboutus/media']/text()")) < 1 :
+        proxyRsp = requests.get('http://127.0.0.1:8000/?types=0&count=' + str(ipcount));
+        proxyIp = json.loads(proxyRsp.text);
     while (len(html.xpath("//a[@href='http://www.dianping.com/aboutus/media']/text()")) < 1) and (ipoint > 0):
-        print("change proxy.");
+        print("change proxy...");
         ip = proxyIp[ipcount-ipoint][0];
         port = proxyIp[ipcount-ipoint][1];
         proxies = {'http':'http://%s:%s' %(ip,port), 'https':'http://%s:%s' %(ip,port)};
         try:
             page = requests.get(url,params=param,headers=header,proxies=proxies);
         except requests.exceptions.Timeout:
-            print("timeout...");
+            print("proxy timeout...");
         except requests.exceptions.ConnectionError:
-            print("connection aborted.");
+            print("proxy connection aborted.");
         except requests.exceptions.RequestException as e:
             print(e);
         html = etree.HTML(page.text);
